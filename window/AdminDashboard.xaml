@@ -1,0 +1,287 @@
+﻿<Window x:Class="ELMS_Group1.window.AdminDashboard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Height="700" Width="1600"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None" 
+        Title="Admin Dashboard" 
+        AllowsTransparency="True" 
+        Background="Transparent">
+
+    <Window.Resources>
+
+        <Style x:Key="NavButton" TargetType="Button">
+            <Setter Property="Background" Value="#34495E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="Gray"/>
+                    <Setter Property="Cursor" Value="Arrow"/>
+                    <Setter Property="Opacity" Value="0.5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource NavButton}">
+            <Setter Property="Background" Value="#27AE60"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#A5D6A7"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+
+    </Window.Resources>
+
+    <Grid Background="#F5F5F5">
+        <!-- Custom Title Bar -->
+        <Border Background="#2C3E50" Height="40" VerticalAlignment="Top" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <!-- Title on left -->
+                    <ColumnDefinition Width="Auto" />
+                    <!-- Buttons on right -->
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Admin Dashboard" FontSize="16" Foreground="White" VerticalAlignment="Center" Margin="10,0" Grid.Column="0" />
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+                    <Button Content="—" Width="40" Height="40" Background="Transparent" Foreground="White" BorderThickness="0"
+                    Click="Minimize_Click" FontSize="18" Cursor="Hand" />
+                    <Button Content="×" Width="40" Height="40" Background="Transparent" Foreground="White" BorderThickness="0"
+                    Click="Close_Click" FontSize="18" Cursor="Hand" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+
+        <!-- Header below Title Bar -->
+        <Border Background="#2C3E50" Padding="15" Height="70" VerticalAlignment="Top" Margin="0,40,0,0">
+            <TextBlock Text="University Library Management System" 
+                       Foreground="White" FontSize="24" FontWeight="Bold"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+
+        <!-- Navigation Buttons -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,120,0,0" VerticalAlignment="Top">
+            <Button x:Name="InventoryBtn" Content="📋 Inventory" Width="180" Margin="5" 
+                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            <Button x:Name="UsersBtn" Content="👥 Users" Width="180" Margin="5" 
+                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            <Button x:Name="ApplicationsBtn" Content="👥 Applications" Width="180" Margin="5" 
+                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            <Button x:Name="PendingBtn" Content="📚 Pending Request" Width="180" Margin="5"
+                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            <Button x:Name="BorrowedBtn" Content="🔄 Borrowed Items" Width="180" Margin="5" 
+                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            <Button x:Name="ReportsBtn" Content="📈 Reports" Width="180" Margin="5" 
+                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            <Button x:Name="AdminBtn" Content="🔧 Admin" Width="180" Margin="5" 
+                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+        </StackPanel>
+
+        <!-- Main Content Area with Scroll -->
+        <ScrollViewer VerticalAlignment="Top" Margin="20,170,20,20">
+            <StackPanel>
+                <!-- Inventory Section -->
+                <Border x:Name="InventorySection" Background="White" Padding="20" CornerRadius="5" 
+                        BorderBrush="#DDD" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="Inventory Management" 
+                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
+                                   Foreground="#2C3E50"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBox x:Name="InventorySearchBox" Width="250" Height="30" Margin="0,0,10,0"
+                                     VerticalContentAlignment="Center" 
+                                     Text="Search by title or author..." 
+                                     Foreground="Gray"/>
+                            <Button Content="🔍 Search" Width="100" Height="30" Margin="0,0,5,0"/>
+                            <Button Content="⟳ Clear" Width="80" Height="30"/>
+                        </StackPanel>
+
+                        <DataGrid x:Name="InventoryGrid" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Width="200"/>
+                                <DataGridTextColumn Header="Category" Width="150"/>
+                                <DataGridTextColumn Header="Description" Width="120"/>
+                                <DataGridTextColumn Header="Serial No." Width="120"/>
+                                <DataGridTextColumn Header="Status" Width="150"/>
+                                <DataGridTextColumn Header="Quantity" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="➕ Add Inventory" Width="150" Margin="0,0,5,0" Style="{StaticResource PrimaryButton}"/>
+                            <Button Content="✏️ Edit Inventory" Width="150" Margin="0,0,5,0" Style="{StaticResource NavButton}"/>
+                            <Button Content="🗑️ Remove Inventory" Width="150" Margin="0,0,5,0" Style="{StaticResource NavButton}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Users Section -->
+                <Border x:Name="UsersSection" Background="White" Padding="20" CornerRadius="5" 
+                        BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Users Management" 
+                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
+                                   Foreground="#2C3E50"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBox x:Name="UsersSearchBox" Width="330" Height="30"
+                             VerticalContentAlignment="Center"
+                             Text="Search by name or ID..."
+                             Foreground="Gray"
+                             GotFocus="UsersSearchBox_GotFocus"
+                             LostFocus="UsersSearchBox_LostFocus"
+                             TextChanged="UsersSearchBox_TextChanged"/>
+                        </StackPanel>
+
+                        <DataGrid x:Name="UsersGrid" IsReadOnly="True" CanUserDeleteRows="False" SelectionChanged="UsersGrid_SelectionChanged" CanUserAddRows="False" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Student Name" Binding="{Binding FullName}" Width="2*"/>
+                                <DataGridTextColumn Header="ID Number" Binding="{Binding IdNumber}" Width="*"/>
+                                <DataGridTextColumn Header="Course/Year" Binding="{Binding CourseYear}" Width="*"/>
+                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*"/>
+                                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="3*"/>
+                                <DataGridTextColumn Header="Created At" Binding="{Binding CreatedAt}" Width="2*"/>
+                                <DataGridTextColumn Header="Updated At" Binding="{Binding UpdatedAt}" Width="2*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="➕ Add User" Width="120" Margin="0,0,5,0" Style="{StaticResource PrimaryButton}" Click="RegisterUser_Click"/>
+                            <Button x:Name="EditUserButton" Content="✏️ Edit User" Width="120" Margin="0,0,5,0" Style="{StaticResource NavButton}" Click="EditUserButton_Click"/>
+                            <Button x:Name="RemoveUserButton" Content="🗑️ Remove User" Width="130" Margin="0,0,5,0" Style="{StaticResource NavButton}" Click="RemoveUserButton_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Applications Section -->
+                <Border x:Name="ApplicationsSection" Background="White" Padding="20" CornerRadius="5" 
+                        BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="User Applications"
+                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
+                                   Foreground="#2C3E50"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBox x:Name="ApplicationsSearchBox" Width="330" Height="30"
+                             VerticalContentAlignment="Center"
+                             Text="Search by name or ID..."
+                             Foreground="Gray"
+                             GotFocus="ApplicationsSearchBox_GotFocus"
+                             LostFocus="ApplicationsSearchBox_LostFocus"
+                             TextChanged="ApplicationsSearchBox_TextChanged"/>     
+                        </StackPanel>
+
+                        <DataGrid x:Name="ApplicationsGrid" IsReadOnly="True" CanUserDeleteRows="False" SelectionChanged="ApplicationsGrid_SelectionChanged" CanUserAddRows="False" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Student Name" Binding="{Binding FullName}" Width="2*" />
+                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*" />
+                                <DataGridTextColumn Header="ID Number" Binding="{Binding IdNumber}" Width="0.8*" />
+                                <DataGridTextColumn Header="Course/Year" Binding="{Binding CourseYear}" Width="0.9*" />
+                                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="3*" />
+                                <DataGridTextColumn Header="Registered At" Binding="{Binding RegisteredAt}" Width="1.5*" />
+                                <DataGridTextColumn Header="Status" Binding="{Binding IsApproved}" Width="0.5*" />
+                                <DataGridTextColumn Header="Reviewed At" Binding="{Binding ReviewedAt}" Width="1.5*" />
+                                <DataGridTextColumn Header="Reviewed By" Binding="{Binding ReviewedBy}" Width="*" />
+                            </DataGrid.Columns>
+           
+                        </DataGrid>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+                            <Button x:Name="ApproveButton" Content="✔️ Approve" Height ="30" Width="120" Margin="0,0,10,0" Style="{StaticResource PrimaryButton}" Click="ApproveApplication_Click"/>
+                            <Button x:Name="RejectButton" Content="❌ Reject"  Height ="30" Width="120" Style="{StaticResource NavButton}" Click="RejectApplication_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+
+
+                <Border x:Name="PendingSection" Background="White" Padding="20" CornerRadius="5" 
+                     BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Pending Request" 
+                     FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
+                     Foreground="#2C3E50"/>
+
+
+                        <DataGrid x:Name="PendingGrid" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10" SelectionMode="Single" >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Request ID" Width="100"/>
+                                <DataGridTextColumn Header="Student Name" Width="*"/>
+                                <DataGridTextColumn Header="Book Title" Width="200"/>
+                                <DataGridTextColumn Header="Status" Width="100"/>
+                                
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" >
+                            <TextBlock Text="Accepted Date:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <DatePicker x:Name="PendingDatePicker" Width="140" Margin="0,0,15,0"/>
+
+                            <TextBlock Text="Due Date:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <DatePicker x:Name="DueDatePicker" Width="140" Margin="0,0,15,0"/>
+
+                            <Button x:Name="AcceptRequestBtn" Content="✅ Accept Request" Width="130" Margin="0,0,10,0" Style="{StaticResource PrimaryButton}" Click="AcceptRequestBtn_Click"/>
+                            <Button x:Name="RejectRequestBtn" Content="❌ Reject Request" Width="130"  Margin="0,0,10,0" Style="{StaticResource NavButton}" Click="RejectRequestBtn_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+
+
+                <Border x:Name="BorrowedSection" Background="White" Padding="20" CornerRadius="5" 
+                        BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Borrowed Items" 
+                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
+                                   Foreground="#2C3E50"/>
+                  
+                    </StackPanel>
+                </Border>
+
+                <Border x:Name="ReportsSection" Background="White" Padding="20" CornerRadius="5" 
+                        BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Library Analytics &amp; Reports" 
+                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
+                                   Foreground="#2C3E50"/>
+
+                    </StackPanel>
+                </Border>
+
+                <Border x:Name="AdminSection" Background="White" Padding="20" CornerRadius="5" 
+                        BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Administration Panel" 
+                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
+                                   Foreground="#2C3E50"/>
+                    
+                    </StackPanel>
+                </Border>
+
+              
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
