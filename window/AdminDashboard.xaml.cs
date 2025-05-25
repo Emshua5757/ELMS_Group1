@@ -67,7 +67,10 @@ namespace ELMS_Group1.window
             clickedButton.Background = Brushes.LightBlue;
 
             if (clickedButton == InventoryBtn)
+            {
+                await LoadInventory(InventoryGrid);
                 InventorySection.Visibility = Visibility.Visible;
+            }
             else if (clickedButton == UsersBtn)
             {
                 await LoadUsers(UsersGrid);
@@ -87,11 +90,73 @@ namespace ELMS_Group1.window
             else if (clickedButton == AdminBtn)
                 AdminSection.Visibility = Visibility.Visible;
         }
-        private void AddInventory_Click(object sender, RoutedEventArgs e)
+        private async void AddInventory_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Add Inventory feature not implemented yet.", "Add Inventory", MessageBoxButton.OK, MessageBoxImage.Information);
+            var dialog = new AddInventoryOptionDialog();
+            if (dialog.ShowDialog() == true)
+            {
+                switch (dialog.SelectedOption)
+                {
+                    case AddInventoryOptionDialog.InventoryAddOption.Single:
+                        var singleWindow = new AddSingleInventoryWindow();
+                        bool? singleResult = singleWindow.ShowDialog();
+                        if (singleResult == true)
+                        {
+                            var item = singleWindow.InventoryItem;
+                            long? adminId = admin?.Id;
+
+                            var (success, message) = await supabaseService.AddSingleInventoryItemAsync(item, adminId);
+                            MessageBox.Show(message, success ? "Success" : "Error",
+                                MessageBoxButton.OK,
+                                success ? MessageBoxImage.Information : MessageBoxImage.Error);
+                        }
+                        break;
+
+                    case AddInventoryOptionDialog.InventoryAddOption.Multiple:
+                        {
+                            var multipleWindow = new AddMultipleInventoryWindow();
+                            bool? multipleResult = multipleWindow.ShowDialog();
+                            if (multipleResult == true)
+                            {
+                                var items = multipleWindow.InventoryItems;
+                                long? adminId = admin?.Id;
+
+                                var (success, message) = await supabaseService.AddMultipleInventoryItemsAsync(items, adminId);
+
+                                MessageBox.Show(message,
+                                    success ? "Success" : "Error",
+                                    MessageBoxButton.OK,
+                                    success ? MessageBoxImage.Information : MessageBoxImage.Error);
+                            }
+                            break;
+                        }
+                    case AddInventoryOptionDialog.InventoryAddOption.Csv:
+                        var inputDialog = new InputDialog(
+                            "Add Inventory from CSV",
+                            "Paste your CSV content below:"
+                        );
+
+                        bool? result = inputDialog.ShowDialog();
+                        if (result == true)
+                        {
+                            string csvContent = inputDialog.ResponseText;
+                            long? adminId = admin?.Id;
+
+                            var (success, message) = await supabaseService.AddFromCsvAsync(csvContent, adminId);
+
+                            MessageBox.Show(
+                                message,
+                                "CSV Import Result",
+                                MessageBoxButton.OK,
+                                success ? MessageBoxImage.Information : MessageBoxImage.Error
+                            );
+                        }
+                        break;
+                }
+            }
+            await LoadInventory(InventoryGrid);
         }
-        private void EditInventory_Click(object sender, RoutedEventArgs e)
+        private async void EditInventory_Click(object sender, RoutedEventArgs e)
         {
             if (InventoryGrid.SelectedItem == null)
             {
@@ -99,9 +164,31 @@ namespace ELMS_Group1.window
                 return;
             }
 
-            MessageBox.Show("Edit Inventory feature is under development.", "Edit Inventory", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (InventoryGrid.SelectedItem is InventoryItem selectedItem)
+            {
+                var editWindow = new EditInventoryWindow(selectedItem); 
+
+                bool? result = editWindow.ShowDialog();
+
+                if (result == true)
+                {
+                    InventoryItem updatedItem = editWindow.UpdatedInventoryItem;
+
+                    var (success, message) = await supabaseService.UpdateInventoryItemData(updatedItem);
+
+                    MessageBox.Show(message, success ? "Updated" : "Error",
+                        MessageBoxButton.OK,
+                        success ? MessageBoxImage.Information : MessageBoxImage.Error);
+
+                    if (success)
+                    {
+                        await LoadInventory(InventoryGrid);
+                    }
+                }
+            }
         }
-        private void RemoveInventory_Click(object sender, RoutedEventArgs e)
+
+        private async void RemoveInventory_Click(object sender, RoutedEventArgs e)
         {
             if (InventoryGrid.SelectedItem == null)
             {
@@ -109,7 +196,90 @@ namespace ELMS_Group1.window
                 return;
             }
 
-            MessageBox.Show("Remove Inventory feature is under development.", "Remove Inventory", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (InventoryGrid.SelectedItem is InventoryItem selectedItem)
+            {
+                var confirm = MessageBox.Show(
+                    $"Are you sure you want to delete '{selectedItem.Name}'?",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (confirm == MessageBoxResult.Yes)
+                {
+                    (bool success, string message) = await supabaseService.DeleteInventoryItemAsync(selectedItem.Id);
+
+                    MessageBox.Show(message, success ? "Deleted" : "Error",
+                        MessageBoxButton.OK,
+                        success ? MessageBoxImage.Information : MessageBoxImage.Error);
+
+                    if (success)
+                    {
+                        await LoadInventory(InventoryGrid);
+                    }
+                }
+            }
+        }
+
+        private void InventoryGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (InventoryGrid.SelectedItem is InventoryItem selectedItem)
+            {
+                EditInventoryButton.IsEnabled = true;
+                RemoveInventoryButton.IsEnabled = true;
+            }
+            else
+            {
+                EditInventoryButton.IsEnabled = false;
+                RemoveInventoryButton.IsEnabled = false;
+            }
+        }
+        private async void InventorySearchBox_TextChanged(Object sender, TextChangedEventArgs e)
+        {
+            if (InventorySearchBox == null)
+                return;
+            if (InventorySearchBox == null)
+                return;
+            if (InventorySearchBox.Text == "Search...")
+            {
+                await LoadInventory(InventoryGrid);
+                return;
+            }
+
+            string searchText = InventorySearchBox.Text.Trim();
+            await LoadInventory(InventoryGrid, searchText);
+        }
+        private async Task LoadInventory(DataGrid inventoryGrid, string? search="")
+        {
+            (bool success, List<InventoryItem>? items, string message) = await supabaseService.SearchInventoryItemsAsync(search);
+            if (inventoryGrid == null)
+            {
+                return;
+            }
+            if (success && items != null)
+            {
+                inventoryGrid.ItemsSource = items;
+            }
+            else
+            {
+                MessageBox.Show($"Failed to load inventory items: {message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+        private void InventorySearchBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (InventorySearchBox.Text == "Search...")
+            {
+                InventorySearchBox.Text = "";
+                InventorySearchBox.Foreground = Brushes.Black;
+            }
+        }
+        private void InventorySearchBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(InventorySearchBox.Text))
+            {
+                InventorySearchBox.Text = "Search...";
+                InventorySearchBox.Foreground = Brushes.Gray;
+            }
         }
         private void AcceptRequestBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -351,7 +521,6 @@ namespace ELMS_Group1.window
                 MessageBox.Show("Please select a user to edit.", "No User Selected", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
-
         private async void RemoveUserButton_Click(object sender, RoutedEventArgs e)
         {
             if (UsersGrid.SelectedItem is User selectedUser)

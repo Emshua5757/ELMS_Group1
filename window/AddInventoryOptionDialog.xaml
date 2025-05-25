@@ -1,0 +1,38 @@
+﻿<Window x:Class="ELMS_Group1.window.AddInventoryOptionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add Inventory" WindowStyle="None" ResizeMode="NoResize"
+        Background="Transparent" AllowsTransparency="True"
+        Height="320" Width="320" WindowStartupLocation="CenterScreen">
+    <Border Background="White" CornerRadius="10" BorderBrush="#DDD" BorderThickness="1" Padding="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Background="#1976D2" Grid.Row="0" CornerRadius="10,10,0,0" MouseDown="Header_MouseDown">
+                <TextBlock Text="Select Add Inventory Option" VerticalAlignment="Center" Margin="15,0,0,0"
+                           Foreground="White" FontSize="16" FontWeight="Bold"/>
+            </Border>
+
+            <!-- Body -->
+            <StackPanel Grid.Row="1" Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                <Button Content="Add Single Item" Width="240" Height="40" Margin="0,5" Click="BtnSingle_Click"
+                        Background="#1976D2" Foreground="White" FontSize="14" FontWeight="SemiBold"/>
+                <Button Content="Add Multiple Items" Width="240" Height="40" Margin="0,5" Click="BtnMultiple_Click"
+                        Background="#1976D2" Foreground="White" FontSize="14" FontWeight="SemiBold"/>
+                <Button Content="Add From CSV" Width="240" Height="40" Margin="0,5" Click="BtnCsv_Click"
+                        Background="#1976D2" Foreground="White" FontSize="14" FontWeight="SemiBold"/>
+            </StackPanel>
+
+            <!-- Footer -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,20">
+                <Button Content="Cancel" Width="80" Click="BtnCancel_Click"
+                        Background="#EEE" BorderBrush="#CCC" Foreground="Black"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

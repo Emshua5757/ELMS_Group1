@@ -19,7 +19,8 @@ namespace ELMS_Group1.model
     public class InventoryItem
     {
         [JsonPropertyName("id")]
-        public long Id { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
+        public long? Id { get; set; }
 
         [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;

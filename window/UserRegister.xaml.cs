@@ -77,7 +77,7 @@ namespace ELMS_Group1.window
             if (success)
             {
                 MessageBox.Show("Registration submitted successfully! Please wait for admin approval.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                this.Close(); // Close registration window
+                this.Close(); 
             }
             else
             {

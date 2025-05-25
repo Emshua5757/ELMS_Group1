@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using ELMS_Group1.model;
+using System.Globalization;
 
 namespace ELMS_Group1.database
 {
@@ -32,6 +33,28 @@ namespace ELMS_Group1.database
             try
             {
                 var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync($"{supabaseUrl}/rest/v1/{table}", content);
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, responseContent);
+                }
+                else
+                {
+                    return (false, $"Error: {response.StatusCode} - {responseContent}");
+                }
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Exception: {ex.Message}");
+            }
+        }
+        public async Task<(bool success, string message)> CreateAsync<T>(string table, List<T> payloadList)
+        {
+            try
+            {
+                var content = new StringContent(JsonSerializer.Serialize(payloadList), Encoding.UTF8, "application/json");
                 var response = await _httpClient.PostAsync($"{supabaseUrl}/rest/v1/{table}", content);
                 string responseContent = await response.Content.ReadAsStringAsync();
 
@@ -265,7 +288,6 @@ namespace ELMS_Group1.database
             try
             {
                 string encodedText = Uri.EscapeDataString($"%{searchText}%");
-                // Search relevant fields with ilike, you can add more fields if needed
                 string filter = $"or=(name.ilike.{encodedText},category.ilike.{encodedText},description.ilike.{encodedText},serial_number.ilike.{encodedText},location.ilike.{encodedText},status.ilike.{encodedText})";
 
                 var readResult = await ReadAsync("Inventory", filter);
@@ -578,6 +600,251 @@ namespace ELMS_Group1.database
                 return (false, $"Exception: {ex.Message}");
             }
         }
+        public async Task<(bool hasDuplicates, string message, Dictionary<string, List<string>> duplicates)> CheckForDuplicatesAsync(string tableName, Dictionary<string, List<string>> fieldValueMap)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(tableName) || fieldValueMap.Count == 0)
+                    return (false, "Invalid table name or fields.", new());
 
+                var orFilters = new List<string>();
+
+                foreach (var field in fieldValueMap)
+                {
+                    string fieldName = field.Key;
+                    var values = field.Value.Distinct().ToList();
+                    if (values.Count == 0) continue;
+
+                    string joined = string.Join(",", values.Select(v => $"\"{v}\""));
+                    orFilters.Add($"{fieldName}.in.({joined})");
+                }
+
+                string filter = $"or=({string.Join(",", orFilters)})";
+
+                string selectFields = string.Join(",", fieldValueMap.Keys);
+
+                var result = await ReadAsync(tableName, $"{filter}&select={selectFields}");
+
+                if (!result.success)
+                    return (false, $"Query failed: {result.message}", new());
+
+                var records = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(result.message);
+                if (records == null || records.Count == 0)
+                    return (false, "No duplicates found.", new());
+
+                var duplicates = new Dictionary<string, List<string>>();
+
+                foreach (var record in records)
+                {
+                    foreach (var field in fieldValueMap.Keys)
+                    {
+                        if (record.ContainsKey(field))
+                        {
+                            string val = record[field]?.ToString() ?? "";
+                            if (!duplicates.ContainsKey(field))
+                                duplicates[field] = new List<string>();
+                            if (!duplicates[field].Contains(val))
+                                duplicates[field].Add(val);
+                        }
+                    }
+                }
+
+                return (true, "Duplicates found.", duplicates);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Exception: {ex.Message}", new());
+            }
+        }
+        private async Task<(bool success, string message)> AddInventoryItemsAsync(List<InventoryItem> items, long? createdByAdminId)
+        {
+            if (createdByAdminId == null || createdByAdminId <= 0)
+                return (false, "Please log in with an admin account to add inventory items.");
+
+            if (items == null || items.Count == 0)
+                return (false, "No items to add.");
+
+            // Assign CreatedBy admin ID to each item
+            foreach (var item in items)
+            {
+                item.CreatedBy = createdByAdminId;
+            }
+
+            // Step 1: Validate all items (e.g. value > 0)
+            var invalids = items
+                .Where(i => i.Value <= 0 || string.IsNullOrWhiteSpace(i.SerialNumber) || string.IsNullOrWhiteSpace(i.Name) || string.IsNullOrWhiteSpace(i.Category))
+                .ToList();
+
+            if (invalids.Count > 0)
+            {
+                string summary = string.Join("\n", invalids.Select(i => $"- Invalid: Serial #{i.SerialNumber}, Value: {i.Value}"));
+                return (false, $"Validation failed for the following items:\n{summary}");
+            }
+
+            // Step 2: Build map of fields to check for duplicates
+            var fieldValueMap = new Dictionary<string, List<string>>
+            {
+                { "serial_number", items.Select(i => i.SerialNumber).ToList() }
+            };
+
+            // Step 3: Query Supabase for any duplicates
+            var (hasDuplicates, _, duplicates) = await CheckForDuplicatesAsync("Inventory", fieldValueMap);
+
+            if (hasDuplicates)
+            {
+                var msg = new StringBuilder("Duplicate values found:\n");
+                foreach (var pair in duplicates)
+                {
+                    msg.AppendLine($"- {pair.Key}: {string.Join(", ", pair.Value)}");
+                }
+                return (false, msg.ToString());
+            }
+
+            // Step 4: Proceed to insert
+            var result = await CreateAsync("Inventory", items);
+            return result;
+        }
+        public async Task<(bool success, string message)> AddSingleInventoryItemAsync(InventoryItem item, long? createdByAdminId)
+        {
+            if (createdByAdminId == null || createdByAdminId <= 0)
+                return (false, "Please log in with an admin account to add inventory items.");
+
+            return await AddInventoryItemsAsync(new List<InventoryItem> { item }, createdByAdminId);
+        }
+        public async Task<(bool success, string message)> AddMultipleInventoryItemsAsync(List<InventoryItem> items, long? createdByAdminId)
+        {
+            if (createdByAdminId == null || createdByAdminId <= 0)
+                return (false, "Please log in with an admin account to add inventory items.");
+
+            return await AddInventoryItemsAsync(items, createdByAdminId);
+        }
+        public async Task<(bool success, string message)> AddFromCsvAsync(string csv, long? createdByAdminId)
+        {
+            if (createdByAdminId == null || createdByAdminId <= 0)
+                return (false, "Please log in with an admin account to add inventory items.");
+
+            try
+            {
+                var lines = csv.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                var items = new List<InventoryItem>();
+
+                string preferredFormat = "MM/dd/yyyy h:mm:ss tt";
+                var culture = CultureInfo.InvariantCulture;
+
+                foreach (var line in lines.Skip(1)) // Skip header
+                {
+                    var fields = ParseCsvLine(line);
+
+                    if (fields.Count < 7)
+                        continue;
+
+                    // Parse AcquisitionDate from index 5
+                    DateTime? acquisitionDate = null;
+                    var dateStr = fields[5].Trim();
+
+                    if (!string.IsNullOrWhiteSpace(dateStr))
+                    {
+                        if (!DateTime.TryParseExact(dateStr, preferredFormat, culture, DateTimeStyles.None, out var dt))
+                        {
+                            if (!DateTime.TryParse(dateStr, out dt))
+                            {
+                                dt = default;
+                            }
+                        }
+
+                        if (dt != default)
+                            acquisitionDate = dt;
+                    }
+
+                    items.Add(new InventoryItem
+                    {
+                        Name = fields[0].Trim(),
+                        Category = fields[1].Trim(),
+                        Description = fields[2].Trim(),
+                        SerialNumber = fields[3].Trim(),
+                        Location = fields[4].Trim(),
+                        AcquisitionDate = acquisitionDate,
+                        Value = decimal.TryParse(fields[6].Trim(), out var val) ? val : 0m,
+                        Status = "Available"
+                    });
+                }
+
+                return await AddInventoryItemsAsync(items, createdByAdminId);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Failed to parse CSV: {ex.Message}");
+            }
+        }
+        private List<string> ParseCsvLine(string line)
+        {
+            var fields = new List<string>();
+            bool inQuotes = false;
+            StringBuilder field = new();
+
+            for (int i = 0; i < line.Length; i++)
+            {
+                char c = line[i];
+
+                if (c == '"')
+                {
+                    if (inQuotes && i + 1 < line.Length && line[i + 1] == '"') // Escaped quote
+                    {
+                        field.Append('"');
+                        i++; // skip next quote
+                    }
+                    else
+                    {
+                        inQuotes = !inQuotes; // toggle quotes state
+                    }
+                }
+                else if (c == ',' && !inQuotes)
+                {
+                    fields.Add(field.ToString());
+                    field.Clear();
+                }
+                else
+                {
+                    field.Append(c);
+                }
+            }
+
+            fields.Add(field.ToString()); // Add last field
+            return fields;
+        }
+        public async Task<(bool success, string message)> DeleteInventoryItemAsync(long? itemId)
+        {
+            try
+            {
+                string filter = $"id=eq.{itemId}";
+                var deleteResult = await DeleteAsync("Inventory", filter);
+                if (deleteResult.success)
+                    return (true, "Inventory item deleted successfully.");
+                else
+                    return (false, $"Failed to delete inventory item: {deleteResult.message}");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Exception: {ex.Message}");
+            }
+        }
+        public async Task<(bool success, string message)> UpdateInventoryItemData(InventoryItem item)
+        {
+            try
+            {
+                if (item == null)
+                    return (false, "Item cannot be null.");
+                string filter = $"id=eq.{item.Id}";
+                var updateResult = await UpdateAsync("Inventory", filter, item);
+                if (updateResult.success)
+                    return (true, "Inventory item updated successfully.");
+                else
+                    return (false, $"Failed to update inventory item: {updateResult.message}");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Exception: {ex.Message}");
+            }
+        }
     }
 }
