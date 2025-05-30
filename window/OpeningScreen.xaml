@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ELMS_Group1.window"
         mc:Ignorable="d"
-        Title="OpeningScreen" Height="450" Width="800">
+        Title="OpeningScreen" Height="1000" Width="1000">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

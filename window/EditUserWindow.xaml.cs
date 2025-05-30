@@ -12,14 +12,16 @@ namespace ELMS_Group1.window
     {
         private User _user;
         private SupabaseService supabaseService = new SupabaseService();
+        private Admin admin;
         public User UpdatedUser => _user;
 
-        public EditUserWindow(User user)
+        public EditUserWindow(User user, Admin admin)
         {
             InitializeComponent();
 
             _user = user ?? throw new ArgumentNullException(nameof(user));
             LoadUserData();
+            this.admin = admin;
         }
 
         private void LoadUserData()
@@ -87,7 +89,7 @@ namespace ELMS_Group1.window
 
             try
             {
-                var (success, message) = await supabaseService.UpdateUserData(_user);
+                var (success, message) = await supabaseService.UpdateUserData(_user, admin);
                 if (!success)
                 {
                     MessageBox.Show($"Failed to update user data: {message}", "Update Error", MessageBoxButton.OK, MessageBoxImage.Error);

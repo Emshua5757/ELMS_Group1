@@ -15,7 +15,6 @@ namespace ELMS_Group1.database
         private readonly HttpClient _httpClient = new HttpClient();
         private readonly string supabaseUrl = "https://dfitlnephdaiappcrsqt.supabase.co";
         private readonly string supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmaXRsbmVwaGRhaWFwcGNyc3F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NjY3OTksImV4cCI6MjA2MzU0Mjc5OX0.aqWeBMRnZ-HHE2nVZaPvr0PwFn9ncj7B3LdyNF_-6XY";
-
         public SupabaseService()
         {
             _httpClient = new HttpClient();
@@ -393,7 +392,7 @@ namespace ELMS_Group1.database
                 return (false, $"Exception: {ex.Message}");
             }
         }
-        public async Task<(bool success, string message)> ApproveAndAddUserAsync(long pendingUserId, string adminReviewer)
+        public async Task<(bool success, string message)> ApproveAndAddUserAsync(long pendingUserId, Admin admin)
         {
             try
             {
@@ -435,21 +434,40 @@ namespace ELMS_Group1.database
                 {
                     is_approved = true,
                     reviewed_at = DateTime.UtcNow,
-                    reviewed_by = adminReviewer
+                    reviewed_by = admin.FullName
                 };
 
                 var updatePendingResult = await UpdateAsync("PendingUser", filter, updatePayload);
 
-                return updatePendingResult.success
-                    ? (true, "User approved and added to User table.")
-                    : (false, $"User added but failed to update pending status: {updatePendingResult.message}");
+                if (!updatePendingResult.success)
+                    return (false, $"User added but failed to update pending status: {updatePendingResult.message}");
+
+                // Step 5: Add audit logging report
+                string title = $"User approved: {newUserPayload["full_name"]}";
+                string content = $"Pending user ID {pendingUserId} was approved by admin '{admin.FullName}' (ID: {admin.Id}) and added as a user.";
+
+                var (logSuccess, logMessage) = await CreateReportAsync(
+                    reportType: "approve_user",
+                    title: title,
+                    content: content,
+                    format: "text",
+                    adminId: admin.Id
+                );
+
+                if (!logSuccess)
+                {
+                    // Return success but notify about logging failure
+                    return (true, $"User approved, but logging failed: {logMessage}");
+                }
+
+                return (true, "User approved and added to User table.");
             }
             catch (Exception ex)
             {
                 return (false, $"Exception: {ex.Message}");
             }
         }
-        public async Task<(bool success, string message)> RejectPendingUserAsync(long pendingUserId, string feedbackMessage, string adminReviewer)
+        public async Task<(bool success, string message)> RejectPendingUserAsync(long pendingUserId, string feedbackMessage, Admin admin)
         {
             try
             {
@@ -458,11 +476,34 @@ namespace ELMS_Group1.database
                     is_approved = false,
                     admin_feedback = feedbackMessage,
                     reviewed_at = DateTime.UtcNow,
-                    reviewed_by = adminReviewer
+                    reviewed_by = admin.FullName
                 };
 
                 string filter = $"id=eq.{pendingUserId}";
-                return await UpdateAsync("PendingUser", filter, payload);
+                var updateResult = await UpdateAsync("PendingUser", filter, payload);
+
+                if (!updateResult.success)
+                    return (false, $"Failed to update pending user status: {updateResult.message}");
+
+                // Logging the rejection action
+                string title = $"Pending user rejected (ID: {pendingUserId})";
+                string content = $"Pending user ID {pendingUserId} was rejected by admin '{admin.FullName}' (ID: {admin.Id}). Feedback: {feedbackMessage}";
+
+                var (logSuccess, logMessage) = await CreateReportAsync(
+                    reportType: "reject_user",
+                    title: title,
+                    content: content,
+                    format: "text",
+                    adminId: admin.Id
+                );
+
+                if (!logSuccess)
+                {
+                    // Return success but note logging failure
+                    return (true, $"Pending user rejected, but logging failed: {logMessage}");
+                }
+
+                return (true, "Pending user rejected and updated successfully.");
             }
             catch (Exception ex)
             {
@@ -563,23 +604,41 @@ namespace ELMS_Group1.database
                 return (false, $"Exception: {ex.Message}");
             }
         }
-        public async Task<(bool success, string message)> DeleteUserAsync(long userId)
+        public async Task<(bool success, string message)> DeleteUserAsync(long userId, Admin? admin)
         {
             try
             {
                 string filter = $"id=eq.{userId}";
                 var deleteResult = await DeleteAsync("User", filter);
-                if (deleteResult.success)
-                    return (true, "User deleted successfully.");
-                else
+
+                if (!deleteResult.success)
                     return (false, $"Failed to delete user: {deleteResult.message}");
+
+                // Add audit logging
+                string title = $"User deleted (ID: {userId})";
+                string content = $"User ID {userId} was deleted by admin '{admin.FullName}' (ID: {admin.Id}).";
+
+                var (logSuccess, logMessage) = await CreateReportAsync(
+                    reportType: "delete_user",
+                    title: title,
+                    content: content,
+                    format: "text",
+                    adminId: admin.Id
+                );
+
+                if (!logSuccess)
+                {
+                    return (true, $"User deleted successfully, but logging failed: {logMessage}");
+                }
+
+                return (true, "User deleted successfully.");
             }
             catch (Exception ex)
             {
                 return (false, $"Exception: {ex.Message}");
             }
         }
-        public async Task<(bool success, string message)> UpdateUserData(User user)
+        public async Task<(bool success, string message)> UpdateUserData(User user, Admin admin)
         {
             try
             {
@@ -590,10 +649,26 @@ namespace ELMS_Group1.database
 
                 var updateResult = await UpdateAsync("User", filter, user);
 
-                if (updateResult.success)
-                    return (true, "User updated successfully.");
-                else
+                if (!updateResult.success)
                     return (false, $"Failed to update user: {updateResult.message}");
+
+                string title = $"User updated (ID: {user.Id})";
+                string content = $"User ID {user.Id} was updated by admin '{admin.FullName}' (ID: {admin.Id}).";
+
+                var (logSuccess, logMessage) = await CreateReportAsync(
+                    reportType: "update_user",
+                    title: title,
+                    content: content,
+                    format: "text",
+                    adminId: admin.Id
+                );
+
+                if (!logSuccess)
+                {
+                    return (true, $"User updated successfully, but logging failed: {logMessage}");
+                }
+
+                return (true, "User updated successfully.");
             }
             catch (Exception ex)
             {
@@ -700,8 +775,30 @@ namespace ELMS_Group1.database
                 return (false, msg.ToString());
             }
 
-            // Step 4: Proceed to insert
+            // Step 4: Insert items into Inventory table
             var result = await CreateAsync("Inventory", items);
+
+            if (result.success)
+            {
+                var itemSummaries = string.Join("\n", items.Select(i => $"- {i.Name} (Serial: {i.SerialNumber})"));
+                string title = items.Count == 1
+                    ? "Added 1 new inventory item"
+                    : $"Added {items.Count} new inventory items";
+
+                var (reportSuccess, reportMessage) = await CreateReportAsync(
+                    reportType: "inventory_addition",
+                    title: title,
+                    content: $"The following items were added by admin ID {createdByAdminId}:\n{itemSummaries}",
+                    format: "text",
+                    adminId: createdByAdminId.Value
+                );
+
+                if (!reportSuccess)
+                {
+                    return (true, $"Items added successfully, but audit logging failed: {reportMessage}");
+                }
+            }
+
             return result;
         }
         public async Task<(bool success, string message)> AddSingleInventoryItemAsync(InventoryItem item, long? createdByAdminId)
@@ -846,5 +943,83 @@ namespace ELMS_Group1.database
                 return (false, $"Exception: {ex.Message}");
             }
         }
+        private async Task<(bool success, string message)> CreateReportAsync(string reportType, string title, string content, string format, long adminId)
+        {
+            var report = new Report
+            {
+                AdminId = adminId,
+                ReportType = reportType,
+                Title = title,
+                Content = content,
+                Format = format,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var result = await CreateAsync("Report", new List<Report> { report });
+            return result;
+        }
+        private async Task<(bool success, string message)> CreateInventoryExportAsync(Admin admin)
+        {
+            try
+            {
+                // Step 1: Read all inventory items
+                var inventoryResult = await ReadAsync("Inventory");
+                if (!inventoryResult.success)
+                    return (false, $"Failed to fetch inventory: {inventoryResult.message}");
+
+                using var doc = JsonDocument.Parse(inventoryResult.message);
+                var root = doc.RootElement;
+                if (root.GetArrayLength() == 0)
+                    return (false, "No inventory items to export.");
+
+                // Step 2: Build CSV content
+                var sb = new StringBuilder();
+                sb.AppendLine("ID,Name,Serial Number,Category,Value,Description,Created By,Created At");
+
+                foreach (var item in root.EnumerateArray())
+                {
+                    sb.AppendLine(string.Join(",",
+                        item.GetProperty("id").GetInt64(),
+                        EscapeCsv(item.GetProperty("name").GetString()),
+                        EscapeCsv(item.GetProperty("serial_number").GetString()),
+                        EscapeCsv(item.GetProperty("category").GetString()),
+                        item.GetProperty("value").GetDecimal(),
+                        EscapeCsv(item.GetProperty("description").GetString() ?? ""),
+                        item.GetProperty("created_by").GetInt64(),
+                        item.GetProperty("created_at").GetDateTime().ToString("u")
+                    ));
+                }
+
+                string csvContent = sb.ToString();
+
+                // Step 3: Save report log
+                var (reportSuccess, reportMessage) = await CreateReportAsync(
+                    reportType: "inventory_export",
+                    title: $"Inventory Export ({DateTime.UtcNow:yyyy-MM-dd})",
+                    content: csvContent,
+                    format: "csv",
+                    adminId: admin.Id
+                );
+
+                return reportSuccess
+                    ? (true, "Inventory exported and logged successfully.")
+                    : (false, $"Export generated but logging failed: {reportMessage}");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Exception during export: {ex.Message}");
+            }
+        }
+        private string EscapeCsv(string? input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return "";
+
+            if (input.Contains(',') || input.Contains('"') || input.Contains('\n'))
+                return $"\"{input.Replace("\"", "\"\"")}\"";
+
+            return input;
+        }
+
     }
 }

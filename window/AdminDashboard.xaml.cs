@@ -325,7 +325,7 @@ namespace ELMS_Group1.window
                 return;
             }
 
-            (bool success, string message) = await supabaseService.ApproveAndAddUserAsync(selectedApplication.Id, admin.FullName);
+            (bool success, string message) = await supabaseService.ApproveAndAddUserAsync(selectedApplication.Id, admin);
 
             if (success)
             {
@@ -359,7 +359,7 @@ namespace ELMS_Group1.window
                 return;
             }
 
-            (bool success, string message) = await supabaseService.RejectPendingUserAsync(selectedApplication.Id, inputDialog.ResponseText, admin.Email);
+            (bool success, string message) = await supabaseService.RejectPendingUserAsync(selectedApplication.Id, inputDialog.ResponseText, admin);
 
             if (success)
             {
@@ -505,7 +505,7 @@ namespace ELMS_Group1.window
         {
             if (UsersGrid.SelectedItem is User selectedUser)
             {
-                var editWindow = new EditUserWindow(selectedUser);
+                var editWindow = new EditUserWindow(selectedUser, admin);
 
                 bool? dialogResult = editWindow.ShowDialog();
 
@@ -529,7 +529,7 @@ namespace ELMS_Group1.window
                                               "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (confirm == MessageBoxResult.Yes)
                 {
-                    var result = await supabaseService.DeleteUserAsync(selectedUser.Id); // your Supabase delete method
+                    var result = await supabaseService.DeleteUserAsync(selectedUser.Id, admin);
 
                     if (result.success)
                     {
