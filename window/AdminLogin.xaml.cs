@@ -43,8 +43,7 @@ namespace ELMS_Group1
             }
             else
             {
-                ErrorTextBlock.Text = message;  
-                ErrorTextBlock.Visibility = Visibility.Visible;
+                MessageBox.Show("Invalid email or password.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -59,6 +58,18 @@ namespace ELMS_Group1
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+                this.DragMove();
         }
     }
 }

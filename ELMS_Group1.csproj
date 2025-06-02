@@ -6,6 +6,41 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>5402751.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="images\Clark.png" />
+    <None Remove="images\dia.png" />
+    <None Remove="images\glegel.png" />
+    <None Remove="images\joshua.png" />
+    <None Remove="images\shaine.png" />
+    <None Remove="window\Clark.png" />
+    <None Remove="window\dia.png" />
+    <None Remove="window\glegel.png" />
+    <None Remove="window\joshua.png" />
+    <None Remove="window\shaine.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="5402751.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PDFsharp-MigraDoc-gdi" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\Clark.png" />
+    <Resource Include="images\dia.png" />
+    <Resource Include="images\glegel.png" />
+    <Resource Include="images\joshua.png" />
+    <Resource Include="images\shaine.png" />
+    <Resource Include="window\Clark.png" />
+    <Resource Include="window\dia.png" />
+    <Resource Include="window\glegel.png" />
+    <Resource Include="window\joshua.png" />
+    <Resource Include="window\shaine.png" />
+  </ItemGroup>
 
 </Project>

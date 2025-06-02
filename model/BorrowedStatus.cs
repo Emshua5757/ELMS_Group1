@@ -12,16 +12,19 @@ namespace ELMS_Group1.model
         Pending,
         Borrowed,
         Returned,
+        ReturnedLate,
         Overdue,
         Lost,
         Damaged,
-        Resolved
+        Resolved,
+        Rejected
     }
 
     public class BorrowedStatus
     {
         [JsonPropertyName("id")]
-        public long Id { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public long? Id { get; set; }
 
         [JsonPropertyName("inventory_id")]
         public long InventoryId { get; set; }
@@ -36,7 +39,8 @@ namespace ELMS_Group1.model
         public DateTime BorrowedDate { get; set; } = DateTime.UtcNow;
 
         [JsonPropertyName("due_date")]
-        public DateTime DueDate { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public DateTime? DueDate { get; set; }
 
         [JsonPropertyName("returned_date")]
         public DateTime? ReturnedDate { get; set; }
@@ -44,8 +48,8 @@ namespace ELMS_Group1.model
         [JsonPropertyName("status")]
         public string Status { get; set; } = BorrowStatus.Pending.ToString();
 
-        [JsonPropertyName("admin_id")]
-        public long? AdminId { get; set; }  
+        [JsonPropertyName("approved_by")]
+        public long? ApprovedBy { get; set; }  
 
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

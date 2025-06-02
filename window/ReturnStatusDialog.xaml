@@ -1,0 +1,63 @@
+﻿<Window x:Class="ELMS_Group1.window.ReturnStatusDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Return Item" WindowStyle="None" ResizeMode="NoResize"
+        Background="Transparent" AllowsTransparency="True"
+        Height="400" Width="450" WindowStartupLocation="CenterScreen">
+    <Border Background="White" CornerRadius="10" BorderBrush="#DDD" BorderThickness="1" Padding="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Background="#1976D2" Grid.Row="0" CornerRadius="10,10,0,0" MouseDown="Header_MouseDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Return Item" Margin="15,0,0,0" VerticalAlignment="Center"
+                               Foreground="White" FontSize="16" FontWeight="Bold"/>
+                    <Button Content="✕" Width="30" Height="30" HorizontalAlignment="Right" Margin="0,5,5,5"
+                            Background="Transparent" Foreground="White" BorderBrush="{x:Null}" FontWeight="Bold"
+                            Click="Close_Click"/>
+                </Grid>
+            </Border>
+
+            <!-- Body -->
+            <ScrollViewer Grid.Row="1" Margin="20" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Borrower:" FontWeight="Bold"/>
+                    <TextBlock x:Name="txtBorrowerName" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Item Name:" FontWeight="Bold"/>
+                    <TextBlock x:Name="txtItemName" Margin="0,0,0,10" Text="Loading..."/>
+
+                    <TextBlock Text="Borrowed Date:" FontWeight="Bold"/>
+                    <TextBlock x:Name="txtBorrowedDate" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Due Date:" FontWeight="Bold"/>
+                    <TextBlock x:Name="txtDueDate" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Mark as:" FontWeight="Bold" Margin="0,10,0,2"/>
+                    <ComboBox x:Name="StatusComboBox" Height="30">
+                        <ComboBoxItem Content="Returned" IsSelected="True"/>
+                        <ComboBoxItem Content="Lost"/>
+                        <ComboBoxItem Content="Damaged"/>
+                    </ComboBox>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Footer -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,20">
+                <Button Content="Cancel" Width="80" Margin="0,0,10,0" Click="BtnCancel_Click"
+                        Background="#EEE" BorderBrush="#CCC" Foreground="Black"/>
+                <Button Content="Submit" Width="80" Click="BtnSubmit_Click"
+                        Background="#1976D2" Foreground="White" BorderBrush="#1976D2"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

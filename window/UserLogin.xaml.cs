@@ -25,6 +25,14 @@ namespace ELMS_Group1.window
         {
             InitializeComponent();
         }
+        private void LeftBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
+        }
+
         private async void Login_Click(object sender, RoutedEventArgs e)
         {
             string emailOrName = UsernameTextBox.Text.Trim();
@@ -36,33 +44,30 @@ namespace ELMS_Group1.window
                 return;
             }
 
-            // 1. Try User login first
             var userLogin = await supabaseService.UserLoginEmailorNameAsync(emailOrName, password);
             if (userLogin.success)
             {
                 if (userLogin.user != null)
                 {
-                    // Successful login as approved user
                     MessageBox.Show($"Welcome, {userLogin.user.FullName}!", "Login Successful", MessageBoxButton.OK, MessageBoxImage.Information);
-                    // Proceed to main app screen or dashboard
+                    UserDashboard userDashboard = new UserDashboard(userLogin.user);
+                    userDashboard.Show();
+                    this.Close();
                     return;
                 }
             }
             else if (userLogin.message != "User not found.")
             {
-                // If failure was not "User not found" (e.g., invalid password), show error and stop
                 MessageBox.Show(userLogin.message, "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // 2. No user found, try PendingUser login
             var pendingLogin = await supabaseService.PendingUserLoginEmailorNameAsync(emailOrName, password);
             if (pendingLogin.success)
             {
                 if (pendingLogin.pendingUser != null)
                 {
                     var pUser = pendingLogin.pendingUser;
-                    // Check approval status
                     if (pUser.IsApproved == null)
                     {
                         MessageBox.Show("Your application is still waiting for admin approval. Please check back later.", "Pending Approval", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -70,7 +75,6 @@ namespace ELMS_Group1.window
                     }
                     else if (pUser.IsApproved == false)
                     {
-                        // Denied - show admin feedback and option to delete application
                         var res = MessageBox.Show($"Your application was denied.\nReason: {pUser.AdminFeedback}\n\nDo you want to delete your application so you can try to register again?",
                             "Application Denied", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                         if (res == MessageBoxResult.Yes)
@@ -85,7 +89,6 @@ namespace ELMS_Group1.window
                     }
                     else if (pUser.IsApproved == true)
                     {
-                        // Approved but might be deleted, option to delete application for remake
                         var res = MessageBox.Show("Your account is approved but might be deleted. Do you want to delete your application to remake your account?",
                             "Account Notice", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         if (res == MessageBoxResult.Yes)
@@ -106,20 +109,14 @@ namespace ELMS_Group1.window
                 return;
             }
 
-            // 3. If no user or pending user found
             MessageBox.Show("No account found with that email or full name.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-
-
-        private void ForgotPassword_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void Register_Click(object sender, RoutedEventArgs e)
         {
             var userRegister = new UserRegister();
-            userRegister.ShowDialog();
+            userRegister.Show();
+            this.Close();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

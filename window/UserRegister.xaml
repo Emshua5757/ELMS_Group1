@@ -24,8 +24,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-  
-            <Border Grid.Column="0" Background="#2C3E50" CornerRadius="10,0,0,10">
+
+            <Border Grid.Column="0" Background="#2C3E50" CornerRadius="10,0,0,10" MouseLeftButtonDown="LeftBorder_MouseLeftButtonDown">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
 
                     <TextBlock Text="LIBRARY MANAGEMENT SYSTEM" 
@@ -43,160 +43,106 @@
             </Border>
 
 
-            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                <StackPanel VerticalAlignment="Center" Margin="40,20">
-                    <TextBlock Text="Create Account" 
-                               FontSize="24" 
-                               FontWeight="Bold" 
-                               Margin="0,0,0,30"
-                               Foreground="#2C3E50"/>
+            <Grid Grid.Column="1" Margin="40,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <!-- Scrollable inputs + register -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Fixed footer -->
+                </Grid.RowDefinitions>
 
+                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="15">
+                    <StackPanel VerticalAlignment="Top">
+                        <TextBlock Text="Create Account" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       Margin="0,0,0,30"
+                       Foreground="#2C3E50"/>
 
-                    <StackPanel Margin="0,0,0,15">
-                        <TextBlock Text="Full Name" 
-                                   FontWeight="SemiBold" 
-                                   Margin="0,0,0,5"
-                                   Foreground="#546E7A"/>
-                        <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
-                            <TextBox x:Name="FullNameTextBox" 
-                                     Height="40" 
-                                     Padding="10"
-                                     FontSize="14"
-                                     BorderThickness="0"
-                                     Background="Transparent"/>
-                        </Border>
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Full Name" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="#546E7A"/>
+                            <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
+                                <TextBox x:Name="FullNameTextBox" Height="40" Padding="10" FontSize="14" BorderThickness="0" Background="Transparent"/>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Email" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="#546E7A"/>
+                            <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
+                                <TextBox x:Name="EmailTextBox" Height="40" Padding="10" FontSize="14" BorderThickness="0" Background="Transparent"/>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Id Number" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="#546E7A"/>
+                            <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
+                                <TextBox x:Name="IdnumberTextBox" Height="40" Padding="10" FontSize="14" BorderThickness="0" Background="Transparent"/>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Address" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="#546E7A"/>
+                            <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
+                                <TextBox x:Name="AddressTextBox" Height="40" Padding="10" FontSize="14" BorderThickness="0" Background="Transparent"/>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Course/Year" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="#546E7A"/>
+                            <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
+                                <ComboBox x:Name="CourseYearComboBox" Height="40" Padding="10" FontSize="14" BorderThickness="0">
+                                    <ComboBoxItem Content="BSCpE - 1G"/>
+                                    <ComboBoxItem Content="BSCpE - 2G"/>
+                                    <ComboBoxItem Content="BSCpE - 3G"/>
+                                    <ComboBoxItem Content="BSCpE - 4G"/>
+                                    <ComboBoxItem Content="BSCpE - 17"/>
+                                    <ComboBoxItem Content="BSCpE - 27"/>
+                                    <ComboBoxItem Content="BSCpE - 37"/>
+                                    <ComboBoxItem Content="BSCpE - 47"/>
+                                </ComboBox>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,15">
+                            <TextBlock Text="Password" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="#546E7A"/>
+                            <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
+                                <PasswordBox x:Name="PasswordBox" Height="40" Padding="10" FontSize="14" BorderThickness="0" Background="Transparent"/>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,25">
+                            <TextBlock Text="Confirm Password" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="#546E7A"/>
+                            <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
+                                <PasswordBox x:Name="ConfirmPasswordBox" Height="40" Padding="10" FontSize="14" BorderThickness="0" Background="Transparent"/>
+                            </Border>
+                        </StackPanel>
+
+                        <Button Content="REGISTER" 
+                    Height="45" 
+                    Background="#2C3E50" 
+                    Foreground="White"
+                    FontWeight="SemiBold"
+                    FontSize="14"
+                    BorderThickness="0"
+                    Click="Register_Click"
+                    Cursor="Hand"
+                    Margin="0,10,0,0"/>
                     </StackPanel>
+                </ScrollViewer>
 
-                    <StackPanel Margin="0,0,0,15">
-                        <TextBlock Text="Email" 
-                                   FontWeight="SemiBold" 
-                                   Margin="0,0,0,5"
-                                   Foreground="#546E7A"/>
-                        <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
-                            <TextBox x:Name="EmailTextBox" 
-                                     Height="40" 
-                                     Padding="10"
-                                     FontSize="14"
-                                     BorderThickness="0"
-                                     Background="Transparent"/>
-                        </Border>
-                    </StackPanel>
-
-
-                    <StackPanel Margin="0,0,0,15">
-                        <TextBlock Text="Id Number" 
-                                   FontWeight="SemiBold" 
-                                   Margin="0,0,0,5"
-                                   Foreground="#546E7A"/>
-                        <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
-                            <TextBox x:Name="IdnumberTextBox" 
-                                     Height="40" 
-                                     Padding="10"
-                                     FontSize="14"
-                                     BorderThickness="0"
-                                     Background="Transparent"/>
-                        </Border>
-                    </StackPanel>
-
-
-                    <StackPanel Margin="0,0,0,15">
-                        <TextBlock Text="Address" 
-                                   FontWeight="SemiBold" 
-                                   Margin="0,0,0,5"
-                                   Foreground="#546E7A"/>
-                        <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
-                            <TextBox x:Name="AddressTextBox" 
-                                     Height="40" 
-                                     Padding="10"
-                                     FontSize="14"
-                                     BorderThickness="0"
-                                     Background="Transparent"/>
-                        </Border>
-                    </StackPanel>
-
-
-                    <StackPanel Margin="0,0,0,15">
-                        <TextBlock Text="Course/Year" 
-                                   FontWeight="SemiBold" 
-                                   Margin="0,0,0,5"
-                                   Foreground="#546E7A"/>
-                        <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
-                            <ComboBox x:Name="CourseYearComboBox" 
-                                      Height="40" 
-                                      Padding="10"
-                                      FontSize="14"
-                                      BorderThickness="0">
-                                <ComboBoxItem Content="BSCpE - 1G"/>
-                                <ComboBoxItem Content="BSCpE - 2G"/>
-                                <ComboBoxItem Content="BSCpE - 3G"/>
-                                <ComboBoxItem Content="BSCpE - 4G"/>
-                                <ComboBoxItem Content="BSCpE - 17"/>
-                                <ComboBoxItem Content="BSCpE - 27"/>
-                                <ComboBoxItem Content="BSCpE - 37"/>
-                                <ComboBoxItem Content="BSCpE - 47"/>
-
-                   
-                            </ComboBox>
-                        </Border>
-                    </StackPanel>
-
-                    <StackPanel Margin="0,0,0,15">
-                        <TextBlock Text="Password" 
-                                   FontWeight="SemiBold" 
-                                   Margin="0,0,0,5"
-                                   Foreground="#546E7A"/>
-                        <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
-                            <PasswordBox x:Name="PasswordBox" 
-                                         Height="40" 
-                                         Padding="10"
-                                         FontSize="14"
-                                         BorderThickness="0"
-                                         Background="Transparent"/>
-                        </Border>
-                    </StackPanel>
-
-
-                    <StackPanel Margin="0,0,0,25">
-                        <TextBlock Text="Confirm Password" 
-                                   FontWeight="SemiBold" 
-                                   Margin="0,0,0,5"
-                                   Foreground="#546E7A"/>
-                        <Border BorderBrush="#B0BEC5" BorderThickness="1" CornerRadius="4">
-                            <PasswordBox x:Name="ConfirmPasswordBox" 
-                                         Height="40" 
-                                         Padding="10"
-                                         FontSize="14"
-                                         BorderThickness="0"
-                                         Background="Transparent"/>
-                        </Border>
-                    </StackPanel>
-
-                  
-                    <Button Content="REGISTER" 
-                            Height="45" 
-                            Background="#2C3E50" 
-                            Foreground="White"
-                            FontWeight="SemiBold"
-                            FontSize="14"
-                            BorderThickness="0"
-                            Click="Register_Click"
-                            Cursor="Hand"/>
-
-                 
-               <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                        <TextBlock Text="Already have an account?" 
-                                   Foreground="#546E7A"/>
-                        <Button Content="Login" 
-                                Margin="5,0,0,0"
-                                Foreground="#2C3E50"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                FontWeight="SemiBold"
-                                Cursor="Hand"
-                                Click="Login_Click"/>
-                    </StackPanel>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                    <TextBlock Text="Already have an account?" Foreground="#546E7A"/>
+                    <Button Content="Login" 
+                Margin="5,0,0,0"
+                Foreground="#2C3E50"
+                Background="Transparent"
+                BorderThickness="0"
+                FontWeight="SemiBold"
+                Cursor="Hand"
+                Click="Login_Click"/>
                 </StackPanel>
-            </ScrollViewer>
+            </Grid>
+
 
             <Button x:Name="CloseButton" 
                     Content="✕" 

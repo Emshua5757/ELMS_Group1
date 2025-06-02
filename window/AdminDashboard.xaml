@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ELMS_Group1.window"
         mc:Ignorable="d"
-        Height="700" Width="1600"
+        Height="700" Width="1800"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None" 
         Title="Admin Dashboard" 
@@ -83,19 +84,23 @@
         <!-- Navigation Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,120,0,0" VerticalAlignment="Top">
             <Button x:Name="InventoryBtn" Content="📋 Inventory" Width="180" Margin="5" 
-                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            Style="{StaticResource NavButton}" Click="ShowSection"/>
             <Button x:Name="UsersBtn" Content="👥 Users" Width="180" Margin="5" 
-                    Style="{StaticResource NavButton}" Click="ShowSection"/>
-            <Button x:Name="ApplicationsBtn" Content="👥 Applications" Width="180" Margin="5" 
-                    Style="{StaticResource NavButton}" Click="ShowSection"/>
-            <Button x:Name="PendingBtn" Content="📚 Pending Request" Width="180" Margin="5"
-                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            Style="{StaticResource NavButton}" Click="ShowSection"/>
+            <Button x:Name="ApplicationsBtn" Content="📝 Applications" Width="180" Margin="5" 
+            Style="{StaticResource NavButton}" Click="ShowSection"/>
+            <Button x:Name="PendingBtn" Content="📚 Borrow Request" Width="180" Margin="5"
+            Style="{StaticResource NavButton}" Click="ShowSection"/>
             <Button x:Name="BorrowedBtn" Content="🔄 Borrowed Items" Width="180" Margin="5" 
-                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            Style="{StaticResource NavButton}" Click="ShowSection"/>
+            <Button x:Name="ProblematicBtn" Content="✅ Problematic Items" Width="180" Margin="5" 
+            Style="{StaticResource NavButton}" Click="ShowSection"/>
+            <Button x:Name="HistoryBtn" Content="🕓 Borrow History" Width="180" Margin="5" 
+            Style="{StaticResource NavButton}" Click="ShowSection"/>
             <Button x:Name="ReportsBtn" Content="📈 Reports" Width="180" Margin="5" 
-                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            Style="{StaticResource NavButton}" Click="ShowSection"/>
             <Button x:Name="AdminBtn" Content="🔧 Admin" Width="180" Margin="5" 
-                    Style="{StaticResource NavButton}" Click="ShowSection"/>
+            Style="{StaticResource NavButton}" Click="ShowSection"/>
         </StackPanel>
 
         <ScrollViewer VerticalAlignment="Top" Margin="20,170,20,20">
@@ -119,7 +124,7 @@
 
                         <DataGrid x:Name="InventoryGrid" IsReadOnly="True" CanUserDeleteRows="False" SelectionChanged="InventoryGrid_SelectionChanged" CanUserAddRows="False" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding Id}" Header="ID" Width="*"/>
+                                <DataGridTextColumn Binding="{Binding Id}" Header="ID" Width="0.4*"/>
                                 <DataGridTextColumn Binding="{Binding Name}" Header="Name" Width="*"/>
                                 <DataGridTextColumn Binding="{Binding Category}" Header="Category" Width="*"/>
                                 <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="*"/>
@@ -135,14 +140,13 @@
                         </DataGrid>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button x:Name="AddInventoryButton" Content="➕ Add Inventory" Width="150" Margin="0,0,5,0" Style="{StaticResource PrimaryButton}" Click="AddInventory_Click"/>
-                            <Button x:Name="EditInventoryButton" Content="✏️ Edit Inventory" Width="150" Margin="0,0,5,0" Style="{StaticResource NavButton}" Click="EditInventory_Click"/>
-                            <Button x:Name="RemoveInventoryButton" Content="🗑️ Remove Inventory" Width="150" Margin="0,0,5,0" Style="{StaticResource NavButton}" Click="RemoveInventory_Click"/>
+                            <Button x:Name="AddInventoryButton" Content="➕ Add Inventory" Height ="30" Width="150" Margin="0,0,5,0" Style="{StaticResource PrimaryButton}" Click="AddInventory_Click"/>
+                            <Button x:Name="EditInventoryButton" Content="✏️ Edit Inventory" Height ="30" Width="150" Margin="0,0,5,0" Style="{StaticResource NavButton}" Click="EditInventory_Click"/>
+                            <Button x:Name="RemoveInventoryButton" Content="🗑️ Remove Inventory" Height ="30" Width="150" Margin="0,0,5,0" Style="{StaticResource NavButton}" Click="RemoveInventory_Click"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
 
-                <!-- Users Section -->
                 <Border x:Name="UsersSection" Background="White" Padding="20" CornerRadius="5" 
                         BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
                     <StackPanel>
@@ -162,6 +166,7 @@
 
                         <DataGrid x:Name="UsersGrid" IsReadOnly="True" CanUserDeleteRows="False" SelectionChanged="UsersGrid_SelectionChanged" CanUserAddRows="False" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10">
                             <DataGrid.Columns>
+                                <DataGridTextColumn Header="UID" Binding="{Binding Id}" Width="0.4*"/>
                                 <DataGridTextColumn Header="Student Name" Binding="{Binding FullName}" Width="2*"/>
                                 <DataGridTextColumn Header="ID Number" Binding="{Binding IdNumber}" Width="*"/>
                                 <DataGridTextColumn Header="Course/Year" Binding="{Binding CourseYear}" Width="*"/>
@@ -173,14 +178,13 @@
                         </DataGrid>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Content="➕ Add User" Width="120" Margin="0,0,5,0" Style="{StaticResource PrimaryButton}" Click="RegisterUser_Click"/>
-                            <Button x:Name="EditUserButton" Content="✏️ Edit User" Width="120" Margin="0,0,5,0" Style="{StaticResource NavButton}" Click="EditUserButton_Click"/>
-                            <Button x:Name="RemoveUserButton" Content="🗑️ Remove User" Width="130" Margin="0,0,5,0" Style="{StaticResource NavButton}" Click="RemoveUserButton_Click"/>
+                            <Button Content="➕ Add User" Height ="30" Width="120" Margin="0,0,5,0" Style="{StaticResource PrimaryButton}" Click="RegisterUser_Click"/>
+                            <Button x:Name="EditUserButton" Height ="30" Content="✏️ Edit User" Width="120" Margin="0,0,5,0" Style="{StaticResource NavButton}" Click="EditUserButton_Click"/>
+                            <Button x:Name="RemoveUserButton" Height ="30" Content="🗑️ Remove User" Width="130" Margin="0,0,5,0" Style="{StaticResource NavButton}" Click="RemoveUserButton_Click"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
 
-                <!-- Applications Section -->
                 <Border x:Name="ApplicationsSection" Background="White" Padding="20" CornerRadius="5" 
                         BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
                     <StackPanel>
@@ -200,6 +204,7 @@
 
                         <DataGrid x:Name="ApplicationsGrid" IsReadOnly="True" CanUserDeleteRows="False" SelectionChanged="ApplicationsGrid_SelectionChanged" CanUserAddRows="False" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10">
                             <DataGrid.Columns>
+                                <DataGridTextColumn Header="PID" Binding="{Binding Id}" Width="0.4*"/>
                                 <DataGridTextColumn Header="Student Name" Binding="{Binding FullName}" Width="2*" />
                                 <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*" />
                                 <DataGridTextColumn Header="ID Number" Binding="{Binding IdNumber}" Width="0.8*" />
@@ -220,57 +225,325 @@
                     </StackPanel>
                 </Border>
 
-
-
                 <Border x:Name="PendingSection" Background="White" Padding="20" CornerRadius="5" 
                      BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
                     <StackPanel>
-                        <TextBlock Text="Pending Request" 
-                     FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
-                     Foreground="#2C3E50"/>
+                        <TextBlock Text="Pending Borrow Request" 
+                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
+                                   Foreground="#2C3E50"/>
 
-
-                        <DataGrid x:Name="PendingGrid" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10" SelectionMode="Single" >
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBox x:Name="PendingSearchBox" Width="330" Height="30"
+                                      VerticalContentAlignment="Center"
+                                      Text="Search by name or ID..."
+                                      Foreground="Gray"
+                                      GotFocus="PendingSearchBox_GotFocus"
+                                      LostFocus="PendingSearchBox_LostFocus"
+                                      TextChanged="PendingSearchBox_TextChanged"/>     
+                        </StackPanel>
+                        <DataGrid x:Name="PendingGrid"  IsReadOnly="True" CanUserDeleteRows="False" CanUserAddRows="False" AutoGenerateColumns="False" Height="300" Margin="0,0,0,10" SelectionMode="Single" >
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Request ID" Width="100"/>
-                                <DataGridTextColumn Header="Student Name" Width="*"/>
-                                <DataGridTextColumn Header="Book Title" Width="200"/>
-                                <DataGridTextColumn Header="Status" Width="100"/>
-                                
+                                <DataGridTextColumn Header="RID" Binding="{Binding Id}" Width="0.3*" />
+                                <DataGridTextColumn Header="User ID" Binding="{Binding UserId}" Width="0.5*" />
+                                <DataGridTextColumn Header="Borrower Name" Binding="{Binding BorrowerName}" Width="*" />
+                                <DataGridTextColumn Header="Inventory ID" Binding="{Binding InventoryId}" Width="0.6*" />
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="0.5*" />
+                                <DataGridTextColumn Header="Borrowed Date" Binding="{Binding BorrowedDate}" Width="*"/>
+                                <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate}" Width="*"/>
+                                <DataGridTextColumn Header="Approved By" Binding="{Binding ApprovedBy}" Width="*" />
+                                <DataGridTextColumn Header="Created At" Binding="{Binding CreatedAt}" Width="*" />
+                                <DataGridTextColumn Header="Updated At" Binding="{Binding UpdatedAt}" Width="*" />
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" >
-                            <TextBlock Text="Accepted Date:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                            <DatePicker x:Name="PendingDatePicker" Width="140" Margin="0,0,15,0"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" >
 
                             <TextBlock Text="Due Date:" VerticalAlignment="Center" Margin="0,0,5,0"/>
                             <DatePicker x:Name="DueDatePicker" Width="140" Margin="0,0,15,0"/>
 
-                            <Button x:Name="AcceptRequestBtn" Content="✅ Accept Request" Width="130" Margin="0,0,10,0" Style="{StaticResource PrimaryButton}" Click="AcceptRequestBtn_Click"/>
-                            <Button x:Name="RejectRequestBtn" Content="❌ Reject Request" Width="130"  Margin="0,0,10,0" Style="{StaticResource NavButton}" Click="RejectRequestBtn_Click"/>
+                            <Button x:Name="AcceptRequestBtn" Height ="30" Content="✅ Accept Request" Width="130" Margin="0,0,10,0" Style="{StaticResource PrimaryButton}" Click="AcceptRequestBtn_Click"/>
+                            <Button x:Name="RejectRequestBtn" Height ="30" Content="❌ Reject Request" Width="130"  Margin="0,0,10,0" Style="{StaticResource NavButton}" Click="RejectRequestBtn_Click"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
 
-
-
-                <Border x:Name="BorrowedSection" Background="White" Padding="20" CornerRadius="5" 
+                <Border x:Name="BorrowedSection" Background="White" Padding="20" CornerRadius="5"
                         BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
                     <StackPanel>
                         <TextBlock Text="Borrowed Items" 
                                    FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
-                                   Foreground="#2C3E50"/>
-                  
+                                   Foreground="#2C3E50"/>       
+
+                        <!-- Search -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBox x:Name="BorrowedSearchBox" Width="330" Height="30"
+                                     VerticalContentAlignment="Center"
+                                     Text="Search by name..."
+                                     Foreground="Gray"
+                                     GotFocus="BorrowedSearchBox_GotFocus"
+                                     LostFocus="BorrowedSearchBox_LostFocus"
+                                     TextChanged="BorrowedSearchBox_TextChanged"/>  
+                        </StackPanel>
+
+                        <!-- Borrowed Items Grid -->
+                        <DataGrid x:Name="BorrowedGrid" IsReadOnly="True" CanUserDeleteRows="False" 
+                                  CanUserAddRows="False" AutoGenerateColumns="False" Height="300" 
+                                  Margin="0,0,0,10" SelectionMode="Single"> 
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="RID" Binding="{Binding Id}" Width="0.3*" />
+                                <DataGridTextColumn Header="User ID" Binding="{Binding UserId}" Width="0.5*" />
+                                <DataGridTextColumn Header="Borrower Name" Binding="{Binding BorrowerName}" Width="*" />
+                                <DataGridTextColumn Header="Inventory ID" Binding="{Binding InventoryId}" Width="0.6*" />
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="0.6*" />
+                                <DataGridTextColumn Header="Borrowed Date" Binding="{Binding BorrowedDate}" Width="*" />
+                                <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate}" Width="*" />
+                                <DataGridTextColumn Header="Approved By" Binding="{Binding ApprovedBy}" Width="*" />
+                                <DataGridTextColumn Header="Created At" Binding="{Binding CreatedAt}" Width="*" />
+                                <DataGridTextColumn Header="Updated At" Binding="{Binding UpdatedAt}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- Action Buttons -->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                            <Button x:Name="CheckOverdueBtn" Height ="30" Content="📅 Check Overdue" Width="130" Margin="0,0,10,0" Style="{StaticResource PrimaryButton}" Click="CheckOverdueBtn_Click" />
+                            <Button x:Name="ReturnBtn" Height ="30" Content="↩ Return" Width="130" Margin="0,0,0,0" Style="{StaticResource NavButton}" Click="ReturnBtn_Click" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                <Border x:Name="BorrowHistorySection" Background="White" Padding="20" CornerRadius="5"
+                        BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Borrow History"
+                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
+                                   Foreground="#2C3E50"/>   
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBox x:Name="BorrowHistorySearchBox" Width="330" Height="30"
+                                     VerticalContentAlignment="Center"
+                                     Text="Search by name or status..." Foreground="Gray"
+                                     GotFocus="BorrowHistorySearchBox_GotFocus"
+                                     LostFocus="BorrowHistorySearchBox_LostFocus"
+                                     TextChanged="BorrowHistorySearchBox_TextChanged"/>
+                            <Button Content="🔄 Refresh" Width="100" Margin="10,0,0,0" Click="RefreshBorrowHistory_Click" Style="{StaticResource PrimaryButton}"/>
+                            <ComboBox x:Name="StatusFilter" Width="150" Margin="10,0,0,0" SelectionChanged="StatusFilter_SelectionChanged">
+                                <ComboBoxItem Content="All" IsSelected="True"/>
+                                <ComboBoxItem Content="Pending"/>
+                                <ComboBoxItem Content="Borrowed"/>
+                                <ComboBoxItem Content="Returned"/>
+                                <ComboBoxItem Content="ReturnedLate"/>
+                                <ComboBoxItem Content="Overdue"/>
+                                <ComboBoxItem Content="Lost"/>
+                                <ComboBoxItem Content="Damaged"/>
+                                <ComboBoxItem Content="Resolved"/>
+                                <ComboBoxItem Content="Rejected"/>
+                            </ComboBox>
+
+                        </StackPanel>
+
+                        <DataGrid x:Name="BorrowHistoryGrid" IsReadOnly="True" CanUserDeleteRows="False"
+                                  CanUserAddRows="False" AutoGenerateColumns="False" Height="300"
+                                  SelectionMode="Single">   
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="RID" Binding="{Binding Id}" Width="0.3*" />
+                                <DataGridTextColumn Header="User ID" Binding="{Binding UserId}" Width="0.5*" />
+                                <DataGridTextColumn Header="Borrower Name" Binding="{Binding BorrowerName}" Width="*" />
+                                <DataGridTextColumn Header="Inventory ID" Binding="{Binding InventoryId}" Width="0.6*" />
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="0.6*" />
+                                <DataGridTextColumn Header="Borrowed Date" Binding="{Binding BorrowedDate}" Width="*" />
+                                <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate}" Width="*" />
+                                <DataGridTextColumn Header="Returned At" Binding="{Binding ReturnedDate}" Width="*" />
+                                <DataGridTextColumn Header="Approved By" Binding="{Binding ApprovedBy}" Width="*" />
+                                <DataGridTextColumn Header="Created At" Binding="{Binding CreatedAt}" Width="*" />
+                                <DataGridTextColumn Header="Updated At" Binding="{Binding UpdatedAt}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <TextBlock Text="Total Records: " FontWeight="Bold"/>
+                            <TextBlock x:Name="TotalHistoryCountTextBlock" Margin="5,0"/>
+
+                            <TextBlock Text="Pending: " FontWeight="Bold" Margin="20,0,0,0"/>
+                            <TextBlock x:Name="PendingCountTextBlock" Margin="5,0"/>
+
+                            <TextBlock Text="Borrowed: " FontWeight="Bold" Margin="20,0,0,0"/>
+                            <TextBlock x:Name="BorrowedCountTextBlock" Margin="5,0"/>
+
+                            <TextBlock Text="Returned: " FontWeight="Bold" Margin="20,0,0,0"/>
+                            <TextBlock x:Name="ReturnedCountTextBlock" Margin="5,0"/>
+
+                            <TextBlock Text="Overdue: " FontWeight="Bold" Margin="20,0,0,0"/>
+                            <TextBlock x:Name="OverdueCountTextBlock" Margin="5,0"/>
+
+                            <TextBlock Text="Lost: " FontWeight="Bold" Margin="20,0,0,0"/>
+                            <TextBlock x:Name="LostCountTextBlock" Margin="5,0"/>
+
+                            <TextBlock Text="Damaged: " FontWeight="Bold" Margin="20,0,0,0"/>
+                            <TextBlock x:Name="DamagedCountTextBlock" Margin="5,0"/>
+
+                            <TextBlock Text="Resolved: " FontWeight="Bold" Margin="20,0,0,0"/>
+                            <TextBlock x:Name="ResolvedCountTextBlock" Margin="5,0"/>
+
+                            <TextBlock Text="Rejected: " FontWeight="Bold" Margin="20,0,0,0"/>
+                            <TextBlock x:Name="RejectedCountTextBlock" Margin="5,0"/>
+                        </StackPanel>
+
+
+                    </StackPanel>
+                </Border>
+                
+                <Border x:Name="ProblematicSection"
+                        Background="White" Padding="20" CornerRadius="5"
+                        BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed"
+                        Margin="0,20,0,0">
+                    <StackPanel>
+
+                        <TextBlock Text="Problematic Borrow Records"
+                                   FontSize="20" FontWeight="Bold"
+                                   Foreground="#2C3E50" Margin="0,0,0,15"/>
+
+                        <!-- Top Control Bar -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                            <TextBox x:Name="ProblematicSearchBox"
+                                     Text="Search..."
+                                     Width="250" Height="30" Margin="0,0,10,0"
+                                     VerticalContentAlignment="Center"
+                                     GotFocus="ProblematicSearchBox_GotFocus"
+                                     LostFocus="ProblematicSearchBox_LostFocus"
+                                     TextChanged="ProblematicSearchBox_TextChanged"/>
+                            <Button x:Name="ExpandAllButton" Content="➕ Expand All" Height="30" Width="120" Margin="0,0,10,0" Click="ExpandAllButton_Click" Style="{StaticResource PrimaryButton}"/>
+                            <Button x:Name="CollapseAllButton" Content="➖ Collapse All" Height="30" Width="120" Click="CollapseAllButton_Click" Style="{StaticResource NavButton}"/>
+                        </StackPanel>
+
+                        <!-- Scrollable List -->
+                        <ScrollViewer Height="300" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="ProblematicBorrowList">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <local:ProblematicBorrowControl/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </ScrollViewer>
                     </StackPanel>
                 </Border>
 
-                <Border x:Name="ReportsSection" Background="White" Padding="20" CornerRadius="5" 
+
+                <Border x:Name="ReportsSection" Background="White" Padding="20" CornerRadius="5"
                         BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
+
                     <StackPanel>
-                        <TextBlock Text="Library Analytics &amp; Reports" 
-                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
-                                   Foreground="#2C3E50"/>
+
+                        <!-- Header -->
+                        <TextBlock Text="Library Analytics &amp; Reports"
+                                   FontSize="20" FontWeight="Bold"
+                                   Foreground="#2C3E50" Margin="0,0,0,10" />    
+
+                        <!-- Database Statistics Panel (Horizontal layout) -->
+                        <Border BorderBrush="#CCC" BorderThickness="1" Padding="10" CornerRadius="4" Background="#F9F9F9" Margin="0,0,0,20">
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Admins:" FontWeight="Bold" />
+                                    <TextBlock x:Name="AdminsCountText" Text="Loading..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Users:" FontWeight="Bold" />
+                                    <TextBlock x:Name="UsersCountText" Text="Loading..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Pending Users:" FontWeight="Bold" />
+                                    <TextBlock x:Name="PendingUsersCountText" Text="Loading..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="6">
+                                    <TextBlock Text="Inventory Items:" FontWeight="Bold" />
+                                    <TextBlock x:Name="InventoryCountText" Text="Loading..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="8">
+                                    <TextBlock Text="Borrowed Items:" FontWeight="Bold" />
+                                    <TextBlock x:Name="BorrowedItemsCountText" Text="Loading..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="10">
+                                    <TextBlock Text="Pending Borrows:" FontWeight="Bold" />
+                                    <TextBlock x:Name="PendingBorrowsCountText" Text="Loading..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="12">
+                                    <TextBlock Text="Overdue Items:" FontWeight="Bold" />
+                                    <TextBlock x:Name="OverdueItemsCountText" Text="Loading..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="14">
+                                    <TextBlock Text="Damaged Items:" FontWeight="Bold" />
+                                    <TextBlock x:Name="DamagedItemsCountText" Text="Loading..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="16">
+                                    <TextBlock Text="Lost Items:" FontWeight="Bold" />
+                                    <TextBlock x:Name="LostItemsCountText" Text="Loading..." />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+
+                        <!-- Search bar and Sort button -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10" VerticalAlignment="Center">
+                            <TextBox x:Name="ReportSearchBox"
+                                     Width="300" Height="30"
+                                     VerticalContentAlignment="Center"
+                                     Text="Search by title or type..."
+                                     Foreground="Gray"
+                                     GotFocus="ReportSearchBox_GotFocus"
+                                     LostFocus="ReportSearchBox_LostFocus"
+                                     TextChanged="ReportSearchBox_TextChanged" />
+
+                            <Button x:Name="SortReportsButton" Width="120" Height="30" Margin="10,0,0,0" Click="SortReportsButton_Click">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock x:Name="SortReportsText" Text="Sort: Newest" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Scrollable reports list -->
+                        <ScrollViewer Height="250" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="ReportList">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </ScrollViewer>
 
                     </StackPanel>
                 </Border>
@@ -279,13 +552,24 @@
                         BorderBrush="#DDD" BorderThickness="1" Visibility="Collapsed" Margin="0,20,0,0">
                     <StackPanel>
                         <TextBlock Text="Administration Panel" 
-                                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
-                                   Foreground="#2C3E50"/>
-                    
+                   FontSize="20" FontWeight="Bold" Margin="0,0,0,15"
+                   Foreground="#2C3E50"/>
+
+                        <TextBox x:Name="AdminSearchBox" 
+                                 Width="300" Height="30" Margin="0,0,0,10"
+                                 VerticalContentAlignment="Center"
+                                 HorizontalAlignment="Left"
+                                 Text="Search admins..." 
+                                 Foreground="Gray"
+                                 GotFocus="AdminSearchBox_GotFocus"
+                                 LostFocus="AdminSearchBox_LostFocus"
+                                 TextChanged="AdminSearchBox_TextChanged" />        
+                        <ItemsControl x:Name="AdminCardsList" />
                     </StackPanel>
                 </Border>
 
-              
+
+
             </StackPanel>
         </ScrollViewer>
     </Grid>

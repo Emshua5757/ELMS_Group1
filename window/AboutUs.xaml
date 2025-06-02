@@ -1,0 +1,147 @@
+﻿<Window x:Class="ELMS_Group1.window.AboutUs"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="University Borrowing System - About Us"
+        Height="750" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Border Background="White" CornerRadius="10" Margin="20">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="#40000000" Opacity="0.3"/>
+        </Border.Effect>
+
+        <Grid>
+
+            <Button x:Name="CloseButton" Content="✕" Width="30" Height="30" 
+                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Margin="10" Background="Transparent" BorderThickness="0" 
+                    Foreground="#607D8B" FontSize="16" FontWeight="Bold"
+                    Click="CloseButton_Click"
+                    Cursor="Hand"/>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="20,50,20,20">
+                <StackPanel>
+
+
+                    <Border Background="#2C3E50" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                        <StackPanel>
+                            <TextBlock Text="About Us" 
+                                      FontSize="28" FontWeight="Bold" 
+                                      Foreground="White" Margin="0,0,0,5"/>
+                            <TextBlock Text="Library Management System" 
+                                      FontSize="14" Foreground="#B0BEC5"/>
+                        </StackPanel>
+                    </Border>
+
+
+                    <Border Background="#FFFFFF" CornerRadius="8" Padding="20" Margin="0,0,0,30"
+        BorderBrush="#E0E0E0" BorderThickness="1">
+                        <TextBlock TextWrapping="Wrap" FontSize="14" Foreground="#37474F" LineHeight="22">
+        The <Run FontWeight="Bold">Library Management System</Run> is a comprehensive platform designed to:
+        <LineBreak/><LineBreak/>
+        • Streamline the borrowing process for <Run FontWeight="SemiBold">academic books</Run> and <Run FontWeight="SemiBold">technical equipment</Run>
+        <LineBreak/>
+        • Manage and track real-time <Run FontWeight="SemiBold">inventory status</Run> including item availability, condition, and location
+        <LineBreak/>
+        • Facilitate <Run FontWeight="SemiBold">user registration</Run> and approval workflows with administrative feedback and review
+        <LineBreak/>
+        • Enable <Run FontWeight="SemiBold">secure login and authentication</Run> for students and administrators using hashed credentials
+        <LineBreak/>
+        • Support <Run FontWeight="SemiBold">admin-generated reports</Run> for audits, inventory summaries, and borrowing statistics
+        <LineBreak/>
+        • Maintain detailed records of <Run FontWeight="SemiBold">borrowed items</Run> with timestamps for borrowing, returning, and due dates
+        <LineBreak/>
+        • Ensure accountability through <Run FontWeight="SemiBold">admin-user associations</Run> for tracking item creation and borrowing approvals
+        <LineBreak/><LineBreak/>
+        The system integrates academic and equipment lending into a centralized digital platform, empowering <Run FontWeight="SemiBold">engineering and technology students</Run> with the tools and resources needed for academic and project-based work.
+                        </TextBlock>
+                    </Border>
+
+
+
+                    <TextBlock Text="Development Team" FontSize="24" FontWeight="Bold" 
+                               Foreground="#2C3E50" Margin="0,0,0,20" HorizontalAlignment="Center"/>
+
+                    <UniformGrid Columns="2">
+
+                        <Border Margin="10" CornerRadius="8" Background="#FFFFFF" 
+                                BorderBrush="#E0E0E0" BorderThickness="1" Padding="15">
+                            <DockPanel>
+                                <Border Width="80" Height="80" CornerRadius="40" BorderBrush="#CFD8DC" BorderThickness="2">
+                                    <Image Source="/window/dia.png" Stretch="UniformToFill"/>
+                                </Border>
+                                <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Baylon, Dia Monique" FontSize="16" FontWeight="Bold" Foreground="#2C3E50"/>
+                                    <TextBlock Text="&quot;If you keep going, anything is possible.&quot;" FontSize="11" FontStyle="Italic" Foreground="#78909C" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+
+                        <Border Margin="10" CornerRadius="8" Background="#FFFFFF" 
+                                BorderBrush="#E0E0E0" BorderThickness="1" Padding="15">
+                            <DockPanel>
+                                <Border Width="80" Height="80" CornerRadius="40" BorderBrush="#CFD8DC" BorderThickness="2">
+                                    <Image Source="/window/shaine.png" Stretch="UniformToFill"/>
+                                </Border>
+                                <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Carreon, Shaine Michael" FontSize="16" FontWeight="Bold" Foreground="#2C3E50"/>
+                                    <TextBlock Text="&quot;Commitment is a big part of what I am and what I believe.&quot;" FontSize="11" FontStyle="Italic" Foreground="#78909C" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+
+
+                        <Border Margin="10" CornerRadius="8" Background="#FFFFFF" 
+                                BorderBrush="#E0E0E0" BorderThickness="1" Padding="15">
+                            <DockPanel>
+                                <Border Width="80" Height="80" CornerRadius="40" BorderBrush="#CFD8DC" BorderThickness="2">
+                                    <Image Source="/window/Clark.png" Stretch="UniformToFill"/>
+                                </Border>
+                                <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Georpe, Clark Kent" FontSize="16" FontWeight="Bold" Foreground="#2C3E50"/>
+                                    <TextBlock Text="&quot;To Infinity and Beyond.&quot; " FontSize="11" FontStyle="Italic" Foreground="#78909C" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+
+                        <Border Margin="10" CornerRadius="8" Background="#FFFFFF" 
+                                BorderBrush="#E0E0E0" BorderThickness="1" Padding="15">
+                            <DockPanel>
+                                <Border Width="80" Height="80" CornerRadius="40" BorderBrush="#CFD8DC" BorderThickness="2">
+                                    <Image Source="/window/glegel.png" Stretch="UniformToFill"/>
+                                </Border>
+                                <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Novo, Glegel" FontSize="16" FontWeight="Bold" Foreground="#2C3E50"/>
+                                    <TextBlock Text="&quot;To understand the future, one must master the present.&quot;" FontSize="11" FontStyle="Italic" Foreground="#78909C" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+
+
+                        <Border Margin="10" CornerRadius="8" Background="#FFFFFF" 
+                                BorderBrush="#E0E0E0" BorderThickness="1" Padding="15">
+                            <DockPanel>
+                                <Border Width="80" Height="80" CornerRadius="40" BorderBrush="#CFD8DC" BorderThickness="2">
+                                    <Image Source="/window/joshua.png" Stretch="UniformToFill"/>
+                                </Border>
+                                <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Ygot, Joshua" FontSize="16" FontWeight="Bold" Foreground="#2C3E50"/>
+                                    <TextBlock Text="&quot;Learn to respect to be respected.&quot;" FontSize="11" FontStyle="Italic" Foreground="#78909C" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </UniformGrid>
+
+
+                    <TextBlock Text="&quot;Together we've created a robust system to enhance the academic experience.&quot;"
+                              FontSize="13" FontStyle="Italic" Foreground="#78909C"
+                              HorizontalAlignment="Center" Margin="0,30,0,20"
+                              TextWrapping="Wrap"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+</Window>

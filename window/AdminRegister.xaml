@@ -4,69 +4,131 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="RegisterWindow" Height="600" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-        <Grid Background="#FFFAFAFA" Margin="25">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <TextBlock Text="Register" FontSize="24" FontWeight="Bold" 
-                       HorizontalAlignment="Center" Margin="0,0,0,25" Grid.Row="0"
-                       Foreground="#007ACC"/>
-
-            <StackPanel Grid.Row="1" Margin="0,0,0,15">
-                <TextBlock Text="Full Name" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                <TextBox x:Name="FullNameTextBox" Height="35" Padding="5"
-                         BorderBrush="#CCCCCC" BorderThickness="1"/>
-            </StackPanel>
+        Title="Register" Height="600" Width="900"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        WindowStyle="None" Background="White"
+        AllowsTransparency="True"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
 
-            <StackPanel Grid.Row="2" Margin="0,0,0,15">
-                <TextBlock Text="E-mail" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                <TextBox x:Name="EmailTextBox" Height="35" Padding="5"
-                         BorderBrush="#CCCCCC" BorderThickness="1"/>
-            </StackPanel>
+    <Border Background="White" CornerRadius="10" BorderBrush="#DDD" BorderThickness="1">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="3" Margin="0,0,0,15">
-                <TextBlock Text="Phone" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                <TextBox x:Name="PhoneTextBox" Height="35" Padding="5"
-                         BorderBrush="#CCCCCC" BorderThickness="1"/>
-            </StackPanel>
+            <!-- LEFT: Registration Form -->
+            <Grid Grid.Column="0" Margin="40">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            
-            <StackPanel Grid.Row="4" Margin="0,0,0,15">
-                <TextBlock Text="Password" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                <PasswordBox x:Name="PasswordBox" Height="35" Padding="5"
+                <TextBlock Text="Register" FontSize="26" FontWeight="Bold" 
+                           HorizontalAlignment="Center" Margin="0,0,0,25" 
+                           Grid.Row="0" Foreground="#007ACC"/>
+
+                <StackPanel Grid.Row="1" Margin="0,0,0,15">
+                    <TextBlock Text="Full Name" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBox x:Name="FullNameTextBox" Height="35" Padding="5"
                              BorderBrush="#CCCCCC" BorderThickness="1"/>
-            </StackPanel>
+                </StackPanel>
 
-            <StackPanel Grid.Row="5" Margin="0,0,0,20">
-                <TextBlock Text="Confirm Password" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                <PasswordBox x:Name="ConfirmPasswordBox" Height="35" Padding="5"
+                <StackPanel Grid.Row="2" Margin="0,0,0,15">
+                    <TextBlock Text="E-mail" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBox x:Name="EmailTextBox" Height="35" Padding="5"
                              BorderBrush="#CCCCCC" BorderThickness="1"/>
-            </StackPanel>
+                </StackPanel>
 
-            <Button Content="Register" Grid.Row="6" Width="120" Height="40" 
-                    HorizontalAlignment="Center" Click="Register_Click"
-                    Background="#007ACC" Foreground="White" 
-                    FontWeight="SemiBold" BorderThickness="0"
-                    Margin="0,0,0,15"/>
+                <StackPanel Grid.Row="3" Margin="0,0,0,15">
+                    <TextBlock Text="Phone" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <TextBox x:Name="PhoneTextBox" Height="35" Padding="5"
+                             BorderBrush="#CCCCCC" BorderThickness="1"/>
+                </StackPanel>
 
+                <StackPanel Grid.Row="4" Margin="0,0,0,15">
+                    <TextBlock Text="Password" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <PasswordBox x:Name="PasswordBox" Height="35" Padding="5"
+                                 BorderBrush="#CCCCCC" BorderThickness="1"/>
+                </StackPanel>
 
-            <StackPanel Grid.Row="7" Orientation="Horizontal" 
-                        HorizontalAlignment="Center" VerticalAlignment="Bottom">
-                <TextBlock Text="Have account?" VerticalAlignment="Center"/>
-                <Button Content="Sign In" Click="SignIn_Click"
-                        Background="Transparent" BorderBrush="Transparent" 
-                        Foreground="#007ACC" FontWeight="SemiBold"
-                        Margin="5,0,0,0" Padding="0"/>
-            </StackPanel>
-             </Grid>
+                <StackPanel Grid.Row="5" Margin="0,0,0,20">
+                    <TextBlock Text="Confirm Password" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                    <PasswordBox x:Name="ConfirmPasswordBox" Height="35" Padding="5"
+                                 BorderBrush="#CCCCCC" BorderThickness="1"/>
+                </StackPanel>
+
+                <Button Content="Register" Grid.Row="5" Width="370" Height="40"
+                        HorizontalAlignment="Center" Click="Register_Click"
+                        Background="#2C3E50" Foreground="White"
+                        FontWeight="SemiBold" BorderThickness="0"
+                        Margin="0,76,0,15" Grid.RowSpan="2"/>
+
+                <StackPanel Grid.Row="7" Orientation="Horizontal" 
+                            HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                    <TextBlock Text="Already have an account?" VerticalAlignment="Center"/>
+                    <Button Content="Sign In" Click="SignIn_Click"
+                            Background="Transparent" BorderBrush="Transparent" 
+                            Foreground="#007ACC" FontWeight="SemiBold"
+                            Margin="5,0,0,0" Padding="0"/>
+                </StackPanel>
+            </Grid>
+
+            <Border Grid.Column="1" Background="#2C3E50" CornerRadius="0,10,10,0">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="REGISTER ADMIN" 
+                               Foreground="White" FontSize="20" FontWeight="Bold"
+                               TextAlignment="Center" Margin="20" TextWrapping="Wrap" Width="180"/>
+                    <TextBlock Text="CREATE NEW ADMIN" 
+                               Foreground="#B0BEC5" FontSize="14"
+                               TextAlignment="Center" Width="180"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Custom Title Bar Buttons -->
+            <Grid Grid.ColumnSpan="2"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Margin="0,10,10,0"
+                                Width="70"
+                                Height="30"
+                                Panel.ZIndex="999">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Minimize Button -->
+                <Button Grid.Column="0"
+            x:Name="MinimizeButton"
+            Background="Transparent"
+            BorderThickness="0"
+            Foreground="WhiteSmoke"
+            FontSize="12"
+            Click="MinimizeButton_Click"
+            Cursor="Hand">
+                    <TextBlock Text="━" VerticalAlignment="Center" TextAlignment="Center"/>
+                </Button>
+
+                <!-- Close Button -->
+                <Button Grid.Column="1"
+            x:Name="CloseButton"
+            Background="Transparent"
+            BorderThickness="0"
+            Foreground="WhiteSmoke"
+            FontSize="12"
+            Click="CloseButton_Click"
+            Cursor="Hand">
+                    <TextBlock Text="✕" VerticalAlignment="Center" TextAlignment="Center"/>
+                </Button>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

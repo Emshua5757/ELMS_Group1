@@ -109,5 +109,11 @@ namespace ELMS_Group1.window
         {
             this.Close();
         }
+        private void LeftBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+                this.DragMove();
+        }
+
     }
 }
