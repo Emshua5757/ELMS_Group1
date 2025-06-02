@@ -14,18 +14,38 @@ using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.DocumentObjectModel.Tables;
 
+
 namespace ELMS_Group1.database
 {
     internal class SupabaseService
     {
-        private readonly HttpClient _httpClient = new HttpClient();
-        private readonly string supabaseUrl = "https://dfitlnephdaiappcrsqt.supabase.co";
-        private readonly string supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmaXRsbmVwaGRhaWFwcGNyc3F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NjY3OTksImV4cCI6MjA2MzU0Mjc5OX0.aqWeBMRnZ-HHE2nVZaPvr0PwFn9ncj7B3LdyNF_-6XY";
+        public class SupabaseConfig
+        {
+            public SupabaseCredentials Supabase { get; set; }
+        }
+
+        public class SupabaseCredentials
+        {
+            public string Url { get; set; }
+            public string AnonKey { get; set; }
+        }
+
+        private readonly HttpClient _httpClient;
+        private readonly string supabaseUrl;
+        private readonly string supabaseAnonKey;
+
         public SupabaseService()
         {
+            string json = File.ReadAllText("appsettings.json");
+            var config = JsonSerializer.Deserialize<SupabaseConfig>(json);
+
+            supabaseUrl = config?.Supabase?.Url ?? throw new Exception("Missing Supabase URL");
+            supabaseAnonKey = config?.Supabase?.AnonKey ?? throw new Exception("Missing Supabase Anon Key");
+
             _httpClient = new HttpClient();
             PrepareHeaders();
         }
+
         private void PrepareHeaders()
         {
             _httpClient.DefaultRequestHeaders.Clear();
